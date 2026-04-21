@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模型引擎 · AI模型中枢 - 华进科技</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style-vibe.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Space Grotesk', 'PingFang SC', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(5, 5, 8, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+        }
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 40px;
+            height: 70px;
+        }
+        .navbar-nav { display: flex; gap: 8px; }
+        .navbar-nav a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .navbar-nav a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+        .navbar-nav a.active { color: #00ff88; background: rgba(0, 255, 136, 0.1); }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 120px 80px 80px;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0, 255, 136, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 20% 80%, rgba(0, 220, 120, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .hero-title {
+            font-size: 64px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: rgba(255,255,255,0.7);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 60px;
+        }
+
+        .stat-item { text-align: center; }
+        .stat-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #00ff88;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+        }
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 8px;
+        }
+
+        .section { padding: 100px 80px; position: relative; }
+        .section-alt { background: rgba(0, 255, 136, 0.02); }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-title { font-size: 42px; font-weight: 700; margin-bottom: 16px; }
+        .section-desc { font-size: 16px; color: rgba(255,255,255,0.6); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: linear-gradient(145deg, rgba(0, 255, 136, 0.08) 0%, rgba(0, 255, 136, 0.02) 100%);
+            border: 1px solid rgba(0, 255, 136, 0.15);
+            border-radius: 20px;
+            padding: 36px;
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 255, 136, 0.4);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(0, 255, 136, 0.1);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: rgba(0, 255, 136, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 12px; color: #fff; }
+        .feature-card p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .process-item { text-align: center; padding: 30px; }
+        .process-num {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.05));
+            border: 2px solid rgba(0, 255, 136, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #00ff88;
+            margin: 0 auto 20px;
+        }
+        .process-item h4 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+        .process-item p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+        .detail-list { max-width: 900px; margin: 0 auto; }
+        .list-item { display: flex; gap: 24px; padding: 24px 0; border-bottom: 1px solid rgba(0, 255, 136, 0.1); }
+        .list-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(0, 255, 136, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .list-content h4 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .list-content p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+        .cta { text-align: center; padding: 100px 40px; background: linear-gradient(180deg, transparent, rgba(0, 255, 136, 0.05)); }
+        .cta-title { font-size: 36px; font-weight: 700; margin-bottom: 16px; }
+        .cta-text { font-size: 16px; color: rgba(255,255,255,0.6); margin-bottom: 30px; }
+        .cta-btn {
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            color: #000;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 40px rgba(0, 255, 136, 0.4); }
+
+        .back-link { position: fixed; bottom: 30px; left: 30px; z-index: 100; }
+        .back-link a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            color: #00ff88;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .back-link a:hover { background: rgba(0, 255, 136, 0.2); }
+
+        @media (max-width: 1024px) {
+            .hero-title { font-size: 48px; }
+            .hero-stats { flex-wrap: wrap; gap: 30px; }
+            .process-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .section, .hero { padding: 100px 20px 60px; }
+            .hero-title { font-size: 36px; }
+            .section-title { font-size: 30px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .process-grid { grid-template-columns: 1fr; }
+            .navbar-container { padding: 0 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-nav">
+                <a href="index.html">首页</a>
+                <a href="services.html" class="active">核心业务</a>
+                <a href="products.html">我们团队</a>
+
+                <a href="contact.html">联系我们</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="hero-badge">模型引擎 · AI模型中枢</div>
+            <h1 class="hero-title">模型引擎 · AI模型中枢</h1>
+            <p class="hero-subtitle">
+                聚焦大模型私有化部署、智能算力调度、AI应用落地、模型定制微调的一站式企业级AI基础设施服务平台。整合主流开源大模型、商用大模型算力资源，以轻量化、私有化、可定制、易集成的技术方案，实现AI技术低成本、高效率、安全化落地
+            </p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-value">私有化</div>
+                    <div class="stat-label">安全可控部署</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">低成本</div>
+                    <div class="stat-label">轻量化落地</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">多模型</div>
+                    <div class="stat-label">兼容适配</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="section-header">
+            <h2 class="section-title">核心服务板块</h2>
+            <p class="section-desc">五大核心服务模块，覆盖从模型部署到应用落地的全流程</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🏠</div>
+                <h3>大模型私有化部署</h3>
+                <p>轻量化本地模型部署，支持豆包、DeepSeek、Llama、Qwen等主流大模型，一键适配Windows、macOS、Linux系统，数据全程不出内网</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔧</div>
+                <h3>AI模型定制微调</h3>
+                <p>基于通用大模型进行专属微调，导入企业资料、业务话术、行业知识库，训练贴合行业需求的垂直大模型</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h3>AI算力调度与API服务</h3>
+                <p>专属模型API接口开发，多模型算力统一调度，云端+本地算力融合，兼顾成本与效率</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI智能体与应用开发</h3>
+                <p>多场景AI智能体定制，企业AI应用集成部署，个人/工作室AI工具箱开发，搭建智能工作流</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>技术运维与培训</h3>
+                <p>一对一全程技术指导，长期运维升级，技术培训教学，让客户自主掌握AI模型中枢使用</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💾</div>
+                <h3>专属知识库搭建</h3>
+                <p>支持文档、表格、图片、音频等多格式数据导入，实现本地文件智能检索、内容问答、资料总结</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title">部署流程</h2>
+            <p class="section-desc">从环境搭建到运行测试，全程专业指导</p>
+        </div>
+        <div class="process-grid">
+            <div class="process-item">
+                <div class="process-num">01</div>
+                <h4>需求分析</h4>
+                <p>了解业务场景与需求</p>
+            </div>
+            <div class="process-item">
+                <div class="process-num">02</div>
+                <h4>方案设计</h4>
+                <p>制定专属部署方案</p>
+            </div>
+            <div class="process-item">
+                <div class="process-num">03</div>
+                <h4>部署实施</h4>
+                <p>环境搭建与模型部署</p>
+            </div>
+            <div class="process-item">
+                <div class="process-num">04</div>
+                <h4>运维培训</h4>
+                <p>测试验收与使用培训</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="section-header">
+            <h2 class="section-title">核心技术优势</h2>
+            <p class="section-desc">以私有化、安全性、低成本为核心，打造可控的AI基础设施</p>
+        </div>
+        <div class="detail-list">
+            <div class="list-item">
+                <div class="list-icon">🔒</div>
+                <div class="list-content">
+                    <h4>私有化安全可控</h4>
+                    <p>本地/内网私有化部署，数据自主管控，无隐私泄露、信息上传风险，满足各类数据保密需求</p>
+                </div>
+            </div>
+            <div class="list-item">
+                <div class="list-icon">💰</div>
+                <div class="list-content">
+                    <h4>低成本轻量化落地</h4>
+                    <p>无需高价服务器、超高配置硬件，适配普通电脑、低配服务器，模型量化优化后低成本运行</p>
+                </div>
+            </div>
+            <div class="list-item">
+                <div class="list-icon">🔄</div>
+                <div class="list-content">
+                    <h4>多模型兼容适配</h4>
+                    <p>全面兼容主流大模型，支持多类型、多版本模型协同运行，可根据需求灵活拓展</p>
+                </div>
+            </div>
+            <div class="list-item">
+                <div class="list-icon">🚀</div>
+                <div class="list-content">
+                    <h4>零门槛易集成</h4>
+                    <p>提供完整技术文档、可视化操作后台、标准化API接口，无需深厚开发基础即可快速部署使用</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title">适用客户群体</h2>
+            <p class="section-desc">为不同类型的客户提供定制化AI解决方案</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">👨‍💻</div>
+                <h3>个人开发者</h3>
+                <p>个人开发者、自媒体创作者、小型创业工作室</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏢</div>
+                <h3>中小企业</h3>
+                <p>中小企业、实体商户、教育培训机构</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏦</div>
+                <h3>金融机构</h3>
+                <p>金融机构、政务服务单位需要数据隐私安全的企业</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔧</div>
+                <h3>技术团队</h3>
+                <p>需要AI数字化升级的各类团队</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2 class="cta-title">开启您的AI智能化升级之旅</h2>
+        <p class="cta-text">无论是企业还是个人，我们都能为您量身定制最适合的AI解决方案</p>
+        <a href="contact.html" class="cta-btn">立即咨询</a>
+    </section>
+
+    <div class="back-link">
+        <a href="services.html">← 返回核心业务</a>
+    </div>
+
+</body>
+</html>

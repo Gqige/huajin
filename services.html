@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>核心业务 - 华进科技</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style-vibe.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; background: #000; overflow: hidden; }
+        
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            padding: 80px 60px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 背景粒子画布 */
+        #particleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 极光背景 */
+        .aurora-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(0,212,255,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(255,107,157,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 50% 80%, rgba(0,255,136,0.05) 0%, transparent 50%);
+            animation: auroraShift 15s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes auroraShift {
+            0%, 100% { transform: translateX(0) scale(1); opacity: 1; }
+            33% { transform: translateX(30px) scale(1.05); opacity: 0.8; }
+            66% { transform: translateX(-20px) scale(0.98); opacity: 0.9; }
+        }
+
+        .services-grid {
+            display: flex;
+            gap: 40px;
+            max-width: 1400px;
+            width: 100%;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 入口卡片 - 霓虹边框效果 */
+        .service-card {
+            flex: 1;
+            max-width: 400px;
+            height: 500px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        /* 霓虹边框 */
+        .service-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--accent), transparent 50%, var(--accent));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.4;
+            transition: opacity 0.5s;
+        }
+        .service-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            background: var(--glow);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        .service-card:hover { transform: translateY(-10px); }
+        .service-card:hover::before { opacity: 1; animation: borderGlow 3s linear infinite; }
+        .service-card:hover::after { opacity: 0.15; }
+
+        @keyframes borderGlow {
+            0%, 100% { filter: hue-rotate(0deg) brightness(1); }
+            50% { filter: hue-rotate(20deg) brightness(1.2); }
+        }
+
+        .service-card .card-accent {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.5s;
+        }
+        .service-card:hover .card-accent { transform: scaleX(1); }
+
+        .service-card[data-service="trading"] { --accent: #00d4ff; --glow: rgba(0,212,255,0.3); }
+        .service-card[data-service="model"] { --accent: #00ff88; --glow: rgba(0,255,136,0.3); }
+        .service-card[data-service="media"] { --accent: #ff6b9d; --glow: rgba(255,107,157,0.3); }
+
+        /* 头像霓虹光圈 */
+        .service-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 30px;
+            overflow: visible;
+            position: relative;
+        }
+        .service-avatar::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            animation: avatarPulse 2s ease-in-out infinite;
+            box-shadow: 0 0 20px var(--glow);
+        }
+        .service-avatar::after {
+            content: '';
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+            animation: avatarGlow 3s ease-in-out infinite;
+        }
+        .service-avatar img { 
+            width: 100%; height: 100%; 
+            object-fit: cover; 
+            position: relative; z-index: 1;
+            border-radius: 50%;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+        @keyframes avatarGlow {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+        }
+
+        .service-title { font-size: 28px; font-weight: 700; margin-bottom: 16px; color: #fff; }
+        .service-subtitle { font-size: 14px; color: var(--accent); margin-bottom: 20px; font-weight: 500; letter-spacing: 1px; }
+        .service-desc { font-size: 15px; line-height: 1.8; color: rgba(255,255,255,0.6); flex: 1; }
+
+        .service-cta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 30px;
+            transition: gap 0.3s;
+        }
+        .service-card:hover .service-cta { gap: 15px; }
+        .service-cta svg { width: 20px; height: 20px; }
+
+        /* 全屏详情覆盖层 */
+        .detail-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 200;
+            background: radial-gradient(ellipse at 50% 0%, rgba(30,30,40,1) 0%, #000 50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        .detail-overlay.active { opacity: 1; visibility: visible; }
+
+        /* 详情页粒子画布 */
+        #detailParticleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        .detail-content {
+            height: 100vh;
+            overflow-y: auto;
+            padding: 100px 60px 60px;
+            scroll-behavior: smooth;
+            position: relative;
+            z-index: 1;
+        }
+        .detail-content::-webkit-scrollbar { width: 6px; }
+        .detail-content::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .detail-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+        .detail-content::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+        /* 人物区 */
+        .detail-hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 60px;
+            padding-top: 40px;
+            position: relative;
+        }
+
+        /* 人物动态光晕 */
+        .detail-hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+            animation: heroGlow 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes heroGlow {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
+        }
+
+        /* 头像流光边框 */
+        .detail-hero-avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin-bottom: 35px;
+            overflow: hidden;
+            background: rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .detail-hero-avatar::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            padding: 5px;
+            background: linear-gradient(135deg, var(--accent), transparent 40%, var(--accent), transparent 60%, var(--accent));
+            background-size: 300% 300%;
+            animation: flowingBorder 3s linear infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+        @keyframes flowingBorder {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+        .detail-hero:hover .detail-hero-avatar { transform: scale(1.08); }
+        .detail-hero-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* 波纹点击效果 */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.4;
+            transform: scale(0);
+            animation: rippleEffect 0.8s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes rippleEffect {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        .detail-hero-name { font-size: 42px; font-weight: 700; margin-bottom: 10px; color: var(--accent); position: relative; z-index: 1; text-shadow: 0 0 40px var(--glow); }
+        .detail-hero-role { font-size: 18px; color: rgba(255,255,255,0.5); margin-bottom: 25px; }
+
+        .detail-hero-tags { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; position: relative; z-index: 1; }
+        .detail-hero-tag {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--accent);
+            border-radius: 25px;
+            font-size: 14px;
+            color: var(--accent);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .detail-hero-tag:hover { background: var(--accent); color: #000; box-shadow: 0 0 25px var(--glow); transform: scale(1.05); }
+
+        /* 详情内容 */
+        .detail-main { max-width: 1200px; margin: 0 auto; }
+        .detail-main > div { animation: fadeInUp 0.5s ease-out forwards; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .detail-header { text-align: center; margin-bottom: 60px; }
+        .detail-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            background: var(--accent);
+            color: #000;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 30px;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+        .detail-title { font-size: 52px; font-weight: 700; line-height: 1.2; margin-bottom: 20px; color: #fff; }
+        .detail-subtitle { font-size: 18px; color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 700px; margin: 0 auto; }
+
+        .detail-section { margin-bottom: 70px; }
+        .section-label { font-size: 12px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 15px; font-weight: 500; text-align: center; }
+        .section-title { font-size: 32px; font-weight: 700; margin-bottom: 40px; color: #fff; text-align: center; }
+
+        /* 服务列表 - 玻璃态卡片 */
+        .services-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+        .service-item {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideIn 0.5s ease-out backwards;
+            position: relative;
+            overflow: hidden;
+        }
+        .service-item:nth-child(1) { animation-delay: 0.1s; }
+        .service-item:nth-child(2) { animation-delay: 0.2s; }
+        .service-item:nth-child(3) { animation-delay: 0.3s; }
+        .service-item:nth-child(4) { animation-delay: 0.4s; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .service-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--accent) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .service-item:hover { 
+            border-color: var(--accent); 
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        .service-item:hover::before { opacity: 0.05; }
+        .service-item-icon {
+            width: 50px; height: 50px; border-radius: 14px;
+            background: var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        .service-item:hover .service-item-icon { transform: scale(1.15) rotate(5deg); }
+        .service-item-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; color: #fff; }
+        .service-item-desc { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.5); }
+
+        /* 工作流程 - 玻璃态 */
+        .workflow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; position: relative; }
+        .workflow::before {
+            content: '';
+            position: absolute;
+            top: 35px; left: 60px; right: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), rgba(255,255,255,0.2));
+            z-index: 0;
+        }
+        .workflow-step { 
+            text-align: center; position: relative; z-index: 1;
+            animation: stepIn 0.5s ease-out backwards;
+        }
+        .workflow-step:nth-child(1) { animation-delay: 0.2s; }
+        .workflow-step:nth-child(2) { animation-delay: 0.35s; }
+        .workflow-step:nth-child(3) { animation-delay: 0.5s; }
+        .workflow-step:nth-child(4) { animation-delay: 0.65s; }
+        @keyframes stepIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .step-number {
+            width: 70px; height: 70px; border-radius: 50%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border: 3px solid var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: 700;
+            margin: 0 auto 20px;
+            color: var(--accent);
+            transition: all 0.3s;
+            position: relative;
+        }
+        .step-number::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            background: var(--glow);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .workflow-step:hover .step-number {
+            transform: scale(1.15);
+            box-shadow: 0 0 35px var(--glow);
+            background: var(--accent);
+            color: #000;
+        }
+        .workflow-step:hover .step-number::before { opacity: 0.3; }
+        .step-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: #fff; }
+        .step-desc { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+
+        /* 统计数据 - 玻璃态 + 数字滚动 */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
+        .stat-item {
+            text-align: center;
+            padding: 35px 20px;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: statIn 0.5s ease-out backwards;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-item:nth-child(1) { animation-delay: 0.3s; }
+        .stat-item:nth-child(2) { animation-delay: 0.4s; }
+        .stat-item:nth-child(3) { animation-delay: 0.5s; }
+        .stat-item:nth-child(4) { animation-delay: 0.6s; }
+        @keyframes statIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .stat-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        /* 环形进度 */
+        .stat-ring {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+        .stat-ring svg {
+            transform: rotate(-90deg);
+        }
+        .stat-ring-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.1);
+            stroke-width: 6;
+        }
+        .stat-ring-progress {
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 220;
+            stroke-dashoffset: 220;
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 0 6px var(--glow));
+        }
+        .stat-ring-value {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .stat-value { 
+            font-size: 48px; 
+            font-weight: 700; 
+            color: var(--accent); 
+            margin-bottom: 10px; 
+            transition: transform 0.3s; 
+        }
+        .stat-item:hover .stat-value { transform: scale(1.1); }
+        .stat-label { font-size: 14px; color: rgba(255,255,255,0.5); }
+
+        /* 关闭按钮 */
+        .close-btn {
+            position: fixed;
+            top: 100px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 300;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .close-btn:hover { transform: rotate(90deg) scale(1.1); }
+        .close-btn svg { width: 24px; height: 24px; color: #000; }
+
+        /* 切换指示器 - 胶囊样式 */
+        .switch-indicator {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 300;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(15px);
+            padding: 10px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .switch-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .switch-dot.active { 
+            width: 30px;
+            background: var(--accent); 
+            box-shadow: 0 0 15px var(--glow); 
+        }
+        .switch-dot:hover:not(.active) { background: rgba(255,255,255,0.6); }
+
+        /* 快捷键提示 */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 300;
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .detail-overlay.active .keyboard-hint { opacity: 1; }
+        .keyboard-key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        /* 滑动手势提示 */
+        .swipe-hint {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.2);
+            font-size: 24px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 299;
+        }
+        .swipe-hint.left { left: 10px; }
+        .swipe-hint.right { right: 10px; }
+        .swipe-hint.show { opacity: 1; }
+        .swipe-hint svg { animation: swipeArrow 1.5s ease-in-out infinite; }
+        .swipe-hint.right svg { transform: rotate(180deg); }
+        @keyframes swipeArrow {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(8px); }
+        }
+
+        /* 粒子爆发效果 */
+        .particle-burst {
+            position: fixed;
+            pointer-events: none;
+            z-index: 500;
+        }
+        .particle-burst span {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--glow);
+            animation: burstParticle 0.8s ease-out forwards;
+        }
+        @keyframes burstParticle {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        /* 切换动画 */
+        .detail-content.switching { animation: switchSlide 0.4s ease-out; }
+        @keyframes switchSlide {
+            0% { opacity: 0; transform: translateX(30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 1100px) {
+            .detail-content { padding: 100px 40px 60px; }
+            .detail-title { font-size: 42px; }
+            .services-list { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 900px) {
+            .services-grid { flex-direction: column; align-items: center; }
+            .service-card { max-width: 100%; height: auto; min-height: 400px; }
+            .detail-title { font-size: 32px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .workflow { grid-template-columns: repeat(2, 1fr); }
+            .workflow::before { display: none; }
+            .keyboard-hint { display: none; }
+            .swipe-hint { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <button class="navbar-toggle" id="navbarToggle" aria-label="展开菜单">☰</button>
+            <div class="navbar-nav" id="navbarNav">
+                <a href="index.html">首页</a>
+                <a href="services.html" class="active">核心业务</a>
+                <a href="products.html">我们团队</a>
+
+                <a href="contact.html">联系我们</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <canvas id="particleCanvas"></canvas>
+        <div class="aurora-bg"></div>
+        <div class="services-grid">
+            <div class="service-card" data-service="trading" onclick="openDetail('trading')">
+                <div class="card-accent"></div>
+                <div class="service-avatar"><img src="images/xiaojinmeiai.png" alt="小金妹AI"></div>
+                <div class="service-title">小金妹AI</div>
+                <div class="service-subtitle">量化交易专家</div>
+                <div class="service-desc">专注量化交易与风险管理，算法驱动的智能决策系统，7×24小时实时监控市场，精准把握每一个交易机会。</div>
+                <div class="service-cta">
+                    了解详情
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </div>
+            </div>
+            <div class="service-card" data-service="model" onclick="openDetail('model')">
+                <div class="card-accent"></div>
+                <div class="service-avatar"><img src="images/xiaohuliai.png" alt="小狐狸AI"></div>
+                <div class="service-title">小狐狸AI</div>
+                <div class="service-subtitle">大模型专家</div>
+                <div class="service-desc">深耕大模型研发与应用，智能对话与知识构建专家，让AI真正理解业务场景，赋能企业智能化升级。</div>
+                <div class="service-cta">
+                    了解详情
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </div>
+            </div>
+            <div class="service-card" data-service="media" onclick="openDetail('media')">
+                <div class="card-accent"></div>
+                <div class="service-avatar"><img src="images/xiaomaqueai.png" alt="小麻雀AI"></div>
+                <div class="service-title">小麻雀AI</div>
+                <div class="service-subtitle">全媒营销官</div>
+                <div class="service-desc">内容创作与传播矩阵专家，抖音、小红书、快手全平台覆盖，让品牌故事触达每一位目标用户。</div>
+                <div class="service-cta">
+                    了解详情
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="detail-overlay" id="detailOverlay">
+        <canvas id="detailParticleCanvas"></canvas>
+        
+        <div class="swipe-hint left" id="swipeLeft">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </div>
+        <div class="swipe-hint right" id="swipeRight">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </div>
+
+        <div class="detail-content" id="detailContent">
+            <div class="detail-hero" id="detailHero">
+                <div class="detail-hero-avatar" id="heroAvatar"><img src="images/xiaojinmeiai.png" alt="小金妹AI"></div>
+                <div class="detail-hero-name" id="heroName">小金妹AI</div>
+                <div class="detail-hero-role" id="heroRole">量化交易专家</div>
+                <div class="detail-hero-tags" id="heroTags">
+                    <span class="detail-hero-tag">量化策略</span>
+                    <span class="detail-hero-tag">风险管理</span>
+                    <span class="detail-hero-tag">算法交易</span>
+                </div>
+            </div>
+            <div class="detail-main" id="detailMain"></div>
+        </div>
+
+        <button class="close-btn" onclick="closeDetail()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+
+        <div class="keyboard-hint">
+            <span class="keyboard-key">←</span>
+            <span class="keyboard-key">→</span>
+            <span>切换服务</span>
+        </div>
+
+        <div class="switch-indicator">
+            <div class="switch-dot active" data-service="trading" onclick="switchService('trading')"></div>
+            <div class="switch-dot" data-service="model" onclick="switchService('model')"></div>
+            <div class="switch-dot" data-service="media" onclick="switchService('media')"></div>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // ========== 粒子系统 ==========
+        class ParticleSystem {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.particles = [];
+                this.mouse = { x: null, y: null };
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.initParticles();
+            }
+
+            initParticles() {
+                const count = window.innerWidth < 900 ? 30 : 50;
+                this.particles = [];
+                for (let i = 0; i < count; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        radius: Math.random() * 2 + 1,
+                        opacity: Math.random() * 0.5 + 0.3
+                    });
+                }
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
+
+                    // 鼠标交互
+                    if (this.mouse.x !== null) {
+                        const dx = p.x - this.mouse.x;
+                        const dy = p.y - this.mouse.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 150) {
+                            p.x += dx * 0.02;
+                            p.y += dy * 0.02;
+                        }
+                    }
+
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                    this.ctx.fill();
+                });
+
+                // 连线
+                this.particles.forEach((p1, i) => {
+                    this.particles.slice(i + 1).forEach(p2 => {
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 120) {
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(p1.x, p1.y);
+                            this.ctx.lineTo(p2.x, p2.y);
+                            this.ctx.strokeStyle = `rgba(255, 255, 255, ${0.15 * (1 - dist / 120)})`;
+                            this.ctx.lineWidth = 0.5;
+                            this.ctx.stroke();
+                        }
+                    });
+                });
+
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // 初始化首页粒子
+        const heroCanvas = document.getElementById('particleCanvas');
+        if (heroCanvas) {
+            const heroParticles = new ParticleSystem(heroCanvas);
+            heroParticles.canvas.addEventListener('mousemove', e => {
+                heroParticles.mouse.x = e.clientX;
+                heroParticles.mouse.y = e.clientY;
+            });
+            heroParticles.canvas.addEventListener('mouseleave', () => {
+                heroParticles.mouse.x = null;
+                heroParticles.mouse.y = null;
+            });
+            heroParticles.animate();
+        }
+
+        // 初始化详情页粒子
+        const detailCanvas = document.getElementById('detailParticleCanvas');
+        let detailParticles = null;
+        function initDetailParticles() {
+            if (!detailCanvas) return;
+            detailParticles = new ParticleSystem(detailCanvas);
+            detailParticles.canvas.addEventListener('mousemove', e => {
+                detailParticles.mouse.x = e.clientX;
+                detailParticles.mouse.y = e.clientY;
+            });
+            detailParticles.canvas.addEventListener('mouseleave', () => {
+                detailParticles.mouse.x = null;
+                detailParticles.mouse.y = null;
+            });
+            detailParticles.animate();
+        }
+
+        // ========== 数据定义 ==========
+        const serviceData = {
+            trading: {
+                accent: '#00d4ff', glow: 'rgba(0,212,255,0.4)',
+                avatar: 'images/xiaojinmeiai.png', name: '小金妹AI', role: '量化交易专家',
+                tags: ['量化策略', '风险管理', '算法交易'],
+                badge: '量化交易', title: '智能量化交易系统',
+                subtitle: '基于深度学习的量化交易引擎，融合多因子模型与机器学习算法，实现全天候自动化交易决策。',
+                services: [
+                    { icon: '📊', title: '多因子选股模型', desc: '综合基本面、技术面、情绪面等多维度因子，AI量化评分筛选优质标的' },
+                    { icon: '⚡', title: '高频做市策略', desc: '毫秒级响应市场变化，智能价差管理，捕获微小价差收益' },
+                    { icon: '🛡️', title: '智能风控系统', desc: '实时监控持仓风险，自动触发止损机制，确保资产安全' },
+                    { icon: '📈', title: '组合优化引擎', desc: '基于现代投资组合理论，智能分散配置，优化风险收益比' }
+                ],
+                workflow: [
+                    { num: '01', title: '数据采集', desc: '多源市场数据实时接入' },
+                    { num: '02', title: '因子计算', desc: 'AI多因子模型量化分析' },
+                    { num: '03', title: '策略生成', desc: '机器学习策略组合优化' },
+                    { num: '04', title: '自动执行', desc: '量化交易指令智能下单' }
+                ],
+                stats: [
+                    { value: '99.9', label: '系统稳定性', suffix: '%', ring: 10 },
+                    { value: '50', label: '量化因子', suffix: '+', ring: 50 },
+                    { value: '24', label: '全天候运行', suffix: 'h', ring: 24 },
+                    { value: '5', label: '交易延迟', suffix: 'ms', ring: 5, inverted: true }
+                ]
+            },
+            model: {
+                accent: '#00ff88', glow: 'rgba(0,255,136,0.4)',
+                avatar: 'images/xiaohuliai.png', name: '小狐狸AI', role: '大模型专家',
+                tags: ['自然语言', '知识图谱', '智能对话'],
+                badge: '大模型应用', title: '企业级AI大模型解决方案',
+                subtitle: '自主研发的企业级大模型引擎，支持私有化部署与定制化训练，让AI能力无缝融入业务流程。',
+                services: [
+                    { icon: '💬', title: '智能对话系统', desc: '基于大语言模型的对话引擎，支持多轮对话、意图识别、上下文理解' },
+                    { icon: '📚', title: '知识图谱构建', desc: '自动从非结构化文档中抽取知识，构建企业知识图谱' },
+                    { icon: '🔍', title: '智能检索增强', desc: 'RAG技术深度整合知识库，实时检索增强生成' },
+                    { icon: '🎯', title: '垂直行业定制', desc: '针对金融、医疗、制造等行业深度定制' }
+                ],
+                workflow: [
+                    { num: '01', title: '需求分析', desc: '深入理解业务场景与目标' },
+                    { num: '02', title: '数据准备', desc: '企业数据清洗与结构化' },
+                    { num: '03', title: '模型训练', desc: '定制化微调与优化' },
+                    { num: '04', title: '部署上线', desc: '私有化部署与运维支持' }
+                ],
+                stats: [
+                    { value: '100', label: '参数规模', suffix: 'B+', ring: 100 },
+                    { value: '95', label: '问答准确率', suffix: '%+', ring: 95 },
+                    { value: '50', label: '行业模板', suffix: '+', ring: 50 },
+                    { value: '100', label: '响应速度', suffix: 'ms', ring: 100, inverted: true }
+                ]
+            },
+            media: {
+                accent: '#ff6b9d', glow: 'rgba(255,107,157,0.4)',
+                avatar: 'images/xiaomaqueai.png', name: '小麻雀AI', role: '全媒营销官',
+                tags: ['内容创作', '多平台运营', '数据驱动'],
+                badge: '全媒体营销', title: 'AI全媒体智造中心',
+                subtitle: '一站式内容创作与分发平台，一键分发至抖音、小红书、快手等主流平台。',
+                services: [
+                    { icon: '✍️', title: 'AI文案引擎', desc: '基于大模型的文案生成，支持种草、测评、故事等多种风格' },
+                    { icon: '🎨', title: '智能素材生成', desc: 'AI生成配图、海报、短视频素材，即梦AI数字人、可灵AI视频' },
+                    { icon: '📱', title: '全平台分发', desc: '一键发布至抖音、小红书、快手，支持定时发布、批量管理' },
+                    { icon: '📊', title: '数据洞察分析', desc: '实时监测内容表现，AI分析用户互动' }
+                ],
+                workflow: [
+                    { num: '01', title: '需求输入', desc: '输入产品卖点与目标人群' },
+                    { num: '02', title: 'AI创作', desc: '一键生成文案+配图+视频' },
+                    { num: '03', title: '平台适配', desc: '智能调整多平台内容格式' },
+                    { num: '04', title: '发布追踪', desc: '一键分发与效果分析' }
+                ],
+                stats: [
+                    { value: '3', label: '主流平台', suffix: '大', ring: 3 },
+                    { value: '10', label: '创作效率', suffix: 'x', ring: 10 },
+                    { value: '1000', label: '日均产能', suffix: '+', ring: 100 },
+                    { value: '85', label: '爆款率', suffix: '%', ring: 85 }
+                ]
+            }
+        };
+
+        let currentService = 'trading';
+        let isAnimating = false;
+
+        // ========== 数字滚动动画 ==========
+        function animateNumber(el, target, suffix, duration = 1500) {
+            const start = 0;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = start + (target - start) * easeOut;
+                
+                if (target < 10) {
+                    el.textContent = current.toFixed(1) + suffix;
+                } else if (target < 100) {
+                    el.textContent = Math.round(current) + suffix;
+                } else {
+                    el.textContent = Math.round(current) + suffix;
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        // ========== 环形进度动画 ==========
+        function animateRing(ring, progress) {
+            const circumference = 220;
+            const offset = circumference * (1 - progress);
+            ring.style.strokeDashoffset = offset;
+        }
+
+        // ========== 波纹点击效果 ==========
+        function createRipple(e, element) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            const rect = element.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+            element.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 800);
+        }
+
+        // ========== 粒子爆发效果 ==========
+        function createParticleBurst(x, y, color, glow) {
+            const burst = document.createElement('div');
+            burst.className = 'particle-burst';
+            burst.style.left = x + 'px';
+            burst.style.top = y + 'px';
+            burst.style.setProperty('--accent', color);
+            burst.style.setProperty('--glow', glow);
+            
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('span');
+                const angle = (i / 12) * Math.PI * 2;
+                const distance = 60 + Math.random() * 40;
+                particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                particle.style.background = color;
+                particle.style.boxShadow = `0 0 10px ${glow}`;
+                burst.appendChild(particle);
+            }
+            
+            document.body.appendChild(burst);
+            setTimeout(() => burst.remove(), 800);
+        }
+
+        // ========== 详情页核心 ==========
+        function openDetail(service) {
+            currentService = service;
+            renderDetail(service);
+            document.getElementById('detailOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            updateSwitchIndicator(service);
+            initDetailParticles();
+            
+            // 延迟执行数字动画
+            setTimeout(() => {
+                document.querySelectorAll('.stat-value[data-animated]').forEach(el => {
+                    const value = parseFloat(el.dataset.value);
+                    const suffix = el.dataset.suffix || '';
+                    animateNumber(el, value, suffix);
+                });
+                document.querySelectorAll('.stat-ring-progress[data-animated]').forEach(el => {
+                    const progress = parseFloat(el.dataset.progress) / 100;
+                    animateRing(el, progress);
+                });
+            }, 600);
+        }
+
+        function closeDetail() {
+            document.getElementById('detailOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function switchService(service) {
+            if (isAnimating || service === currentService) return;
+            isAnimating = true;
+            
+            // 粒子爆发
+            const avatar = document.getElementById('heroAvatar');
+            const rect = avatar.getBoundingClientRect();
+            const data = serviceData[service];
+            createParticleBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, data.accent, data.glow);
+            
+            currentService = service;
+            
+            // 切换动画
+            const content = document.getElementById('detailContent');
+            content.classList.add('switching');
+            
+            renderDetail(service);
+            updateSwitchIndicator(service);
+            document.getElementById('detailContent').scrollTop = 0;
+            
+            setTimeout(() => {
+                content.classList.remove('switching');
+                isAnimating = false;
+                
+                // 执行数字动画
+                document.querySelectorAll('.stat-value[data-animated]').forEach(el => {
+                    const value = parseFloat(el.dataset.value);
+                    const suffix = el.dataset.suffix || '';
+                    animateNumber(el, value, suffix);
+                });
+                document.querySelectorAll('.stat-ring-progress[data-animated]').forEach(el => {
+                    const progress = parseFloat(el.dataset.progress) / 100;
+                    animateRing(el, progress);
+                });
+            }, 400);
+        }
+
+        function updateSwitchIndicator(service) {
+            document.querySelectorAll('.switch-dot').forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.dataset.service === service) dot.classList.add('active');
+            });
+        }
+
+        function renderDetail(service) {
+            const data = serviceData[service];
+            const overlay = document.getElementById('detailOverlay');
+            overlay.style.setProperty('--accent', data.accent);
+            overlay.style.setProperty('--glow', data.glow);
+
+            document.getElementById('heroAvatar').innerHTML = `<img src="${data.avatar}" alt="${data.name}">`;
+            document.getElementById('heroName').textContent = data.name;
+            document.getElementById('heroRole').textContent = data.role;
+            document.getElementById('heroTags').innerHTML = data.tags.map(t => `<span class="detail-hero-tag">${t}</span>`).join('');
+
+            // 计算环形进度
+            const ringProgress = data.stats.map(s => {
+                if (s.ring <= 10) return s.ring * 10;
+                if (s.ring <= 100) return s.ring;
+                if (s.ring <= 1000) return Math.min(s.ring / 10, 100);
+                return 100;
+            });
+
+            document.getElementById('detailMain').innerHTML = `
+                <div class="detail-header">
+                    <div class="detail-badge">${data.badge}</div>
+                    <h1 class="detail-title">${data.title}</h1>
+                    <p class="detail-subtitle">${data.subtitle}</p>
+                </div>
+                <div class="detail-section">
+                    <div class="section-label">核心服务</div>
+                    <h2 class="section-title">全方位解决方案</h2>
+                    <div class="services-list">
+                        ${data.services.map(s => `
+                            <div class="service-item">
+                                <div class="service-item-icon">${s.icon}</div>
+                                <div class="service-item-title">${s.title}</div>
+                                <div class="service-item-desc">${s.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <div class="section-label">工作流程</div>
+                    <h2 class="section-title">标准化执行路径</h2>
+                    <div class="workflow">
+                        ${data.workflow.map(w => `
+                            <div class="workflow-step">
+                                <div class="step-number">${w.num}</div>
+                                <div class="step-title">${w.title}</div>
+                                <div class="step-desc">${w.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <div class="section-label">核心数据</div>
+                    <h2 class="section-title">实力见证</h2>
+                    <div class="stats-grid">
+                        ${data.stats.map((s, i) => `
+                            <div class="stat-item">
+                                <div class="stat-ring">
+                                    <svg width="80" height="80">
+                                        <circle class="stat-ring-bg" cx="40" cy="40" r="35"/>
+                                        <circle class="stat-ring-progress" cx="40" cy="40" r="35" data-animated="true" data-progress="${ringProgress[i]}"/>
+                                    </svg>
+                                    <div class="stat-ring-value">${ringProgress[i]}%</div>
+                                </div>
+                                <div class="stat-value" data-animated="true" data-value="${s.value}" data-suffix="${s.suffix}">${s.value}${s.suffix}</div>
+                                <div class="stat-label">${s.label}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ========== 键盘事件 ==========
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeDetail();
+            if (document.getElementById('detailOverlay').classList.contains('active')) {
+                const services = ['trading', 'model', 'media'];
+                const i = services.indexOf(currentService);
+                if (e.key === 'ArrowLeft' && i > 0) switchService(services[i - 1]);
+                if (e.key === 'ArrowRight' && i < 2) switchService(services[i + 1]);
+            }
+        });
+
+        // ========== 滑动手势 ==========
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const detailOverlay = document.getElementById('detailOverlay');
+        const swipeLeft = document.getElementById('swipeLeft');
+        const swipeRight = document.getElementById('swipeRight');
+
+        detailOverlay.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        detailOverlay.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const threshold = 80;
+            const diff = touchStartX - touchEndX;
+            const services = ['trading', 'model', 'media'];
+            const i = services.indexOf(currentService);
+            
+            if (diff > threshold && i < 2) {
+                switchService(services[i + 1]);
+            } else if (diff < -threshold && i > 0) {
+                switchService(services[i - 1]);
+            }
+        }
+
+        // 鼠标拖拽切换
+        let isDragging = false;
+        let dragStartX = 0;
+
+        detailOverlay.addEventListener('mousedown', e => {
+            if (e.target.closest('.close-btn') || e.target.closest('.switch-indicator') || e.target.closest('.service-card')) return;
+            isDragging = true;
+            dragStartX = e.clientX;
+            swipeLeft.classList.add('show');
+            swipeRight.classList.add('show');
+        });
+
+        document.addEventListener('mouseup', e => {
+            if (isDragging) {
+                isDragging = false;
+                const diff = dragStartX - e.clientX;
+                if (Math.abs(diff) > 100) {
+                    handleSwipe();
+                }
+                swipeLeft.classList.remove('show');
+                swipeRight.classList.remove('show');
+            }
+        });
+
+        // ========== 头像点击波纹 ==========
+        document.getElementById('heroAvatar').addEventListener('click', e => {
+            createRipple(e, e.currentTarget);
+            const data = serviceData[currentService];
+            const rect = e.currentTarget.getBoundingClientRect();
+            createParticleBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, data.accent, data.glow);
+        });
+    </script>
+</body>
+</html>

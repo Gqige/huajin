@@ -1,0 +1,969 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们团队 - 华进科技</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style-vibe.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --leader-color: #6ee7f0;
+            --mingjing-color: #c4b5fd;
+            --qingzhou-color: #6ee7b7;
+            --xiaojin-color: #fcd34d;
+            --xiaoma-color: #f9a8d4;
+            --xiaohu-color: #fdba74;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --text-tertiary: rgba(255, 255, 255, 0.4);
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-medium: rgba(255, 255, 255, 0.12);
+        }
+
+        body {
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #050508;
+            color: #fff;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 背景网格 */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+        }
+
+        /* 主容器 */
+        .main {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-title h1 {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.6) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-title p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 6px;
+            margin-top: 12px;
+        }
+
+        /* 档案卡片网格 */
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* 档案卡片 */
+        .archive-card {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        .archive-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            opacity: 0.8;
+        }
+
+        .archive-card[data-id="leader"]::before { background: var(--leader-color); }
+        .archive-card[data-id="mingjing"]::before { background: var(--mingjing-color); }
+        .archive-card[data-id="qingzhou"]::before { background: var(--qingzhou-color); }
+        .archive-card[data-id="xiaojin"]::before { background: var(--xiaojin-color); }
+        .archive-card[data-id="xiaoma"]::before { background: var(--xiaoma-color); }
+        .archive-card[data-id="xiaohu"]::before { background: var(--xiaohu-color); }
+
+        .archive-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--border-medium);
+        }
+
+        .archive-card[data-id="leader"]:hover { box-shadow: 0 20px 60px rgba(110, 231, 240, 0.15); }
+        .archive-card[data-id="mingjing"]:hover { box-shadow: 0 20px 60px rgba(196, 181, 253, 0.15); }
+        .archive-card[data-id="qingzhou"]:hover { box-shadow: 0 20px 60px rgba(110, 231, 183, 0.15); }
+        .archive-card[data-id="xiaojin"]:hover { box-shadow: 0 20px 60px rgba(252, 211, 77, 0.15); }
+        .archive-card[data-id="xiaoma"]:hover { box-shadow: 0 20px 60px rgba(249, 168, 212, 0.15); }
+        .archive-card[data-id="xiaohu"]:hover { box-shadow: 0 20px 60px rgba(253, 186, 116, 0.15); }
+
+        /* 卡片头部 */
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .card-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .card-id {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .card-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .card-role {
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .archive-card[data-id="leader"] .card-role { color: var(--leader-color); }
+        .archive-card[data-id="mingjing"] .card-role { color: var(--mingjing-color); }
+        .archive-card[data-id="qingzhou"] .card-role { color: var(--qingzhou-color); }
+        .archive-card[data-id="xiaojin"] .card-role { color: var(--xiaojin-color); }
+        .archive-card[data-id="xiaoma"] .card-role { color: var(--xiaoma-color); }
+        .archive-card[data-id="xiaohu"] .card-role { color: var(--xiaohu-color); }
+
+        /* 卡片信息 */
+        .card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .card-info-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .card-info-label {
+            color: var(--text-tertiary);
+        }
+
+        .card-info-value {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--text-secondary);
+        }
+
+        /* 底部标语 */
+        .slogan {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .slogan p {
+            font-size: 16px;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 8px;
+        }
+
+        /* ========== 档案模态框 ========== */
+        .archive-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .archive-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 背景遮罩 */
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(20px);
+        }
+
+        /* 档案容器 */
+        .archive-file {
+            position: relative;
+            width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: linear-gradient(180deg, rgba(20, 20, 25, 0.95) 0%, rgba(10, 10, 15, 0.98) 100%);
+            border: 1px solid var(--border-medium);
+            border-radius: 24px;
+            transform: scale(0.9) translateY(30px);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .archive-modal.active .archive-file {
+            transform: scale(1) translateY(0);
+        }
+
+        /* 顶部色条 */
+        .file-header-bar {
+            height: 5px;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .archive-modal[data-color="leader"] .file-header-bar { background: linear-gradient(90deg, var(--leader-color), rgba(110, 231, 240, 0.3)); }
+        .archive-modal[data-color="mingjing"] .file-header-bar { background: linear-gradient(90deg, var(--mingjing-color), rgba(196, 181, 253, 0.3)); }
+        .archive-modal[data-color="qingzhou"] .file-header-bar { background: linear-gradient(90deg, var(--qingzhou-color), rgba(110, 231, 183, 0.3)); }
+        .archive-modal[data-color="xiaojin"] .file-header-bar { background: linear-gradient(90deg, var(--xiaojin-color), rgba(252, 211, 77, 0.3)); }
+        .archive-modal[data-color="xiaoma"] .file-header-bar { background: linear-gradient(90deg, var(--xiaoma-color), rgba(249, 168, 212, 0.3)); }
+        .archive-modal[data-color="xiaohu"] .file-header-bar { background: linear-gradient(90deg, var(--xiaohu-color), rgba(253, 186, 116, 0.3)); }
+
+        /* 档案标题栏 */
+        .file-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px dashed rgba(255,255,255,0.06);
+        }
+
+        .file-title-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.5;
+        }
+
+        .file-title-text {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            letter-spacing: 2px;
+        }
+
+        .file-close {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-tertiary);
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .file-close:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+            border-color: var(--border-medium);
+        }
+
+        /* 内容区域 */
+        .file-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 照片和信息卡片 */
+        .profile-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .profile-photo {
+            width: 72px;
+            height: 72px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 2px solid var(--border-medium);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .profile-role {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .profile-id {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            letter-spacing: 1px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .stat-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            letter-spacing: 1px;
+        }
+
+        /* 能力卡片 */
+        .ability-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .card-section-title {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-subtle);
+        }
+
+        .ability-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ability-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ability-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+            min-width: 70px;
+        }
+
+        .ability-bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .ability-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.8s ease;
+        }
+
+        .ability-percent {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            min-width: 36px;
+            text-align: right;
+        }
+
+        /* 标签卡片 */
+        .tags-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-item {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+
+        .tag-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+        }
+
+        /* 查看详情按钮 */
+        .detail-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .detail-btn:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+        }
+
+        .detail-btn svg {
+            width: 16px;
+            height: 16px;
+            opacity: 0.6;
+        }
+
+        /* 入场动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .archive-card {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .archive-card:nth-child(1) { animation-delay: 0.1s; }
+        .archive-card:nth-child(2) { animation-delay: 0.15s; }
+        .archive-card:nth-child(3) { animation-delay: 0.2s; }
+        .archive-card:nth-child(4) { animation-delay: 0.25s; }
+        .archive-card:nth-child(5) { animation-delay: 0.3s; }
+        .archive-card:nth-child(6) { animation-delay: 0.35s; }
+
+        /* 响应式 */
+        @media (max-width: 900px) {
+            .archive-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                max-width: 600px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .archive-grid {
+                grid-template-columns: 1fr;
+                max-width: 340px;
+            }
+            
+            .page-title h1 {
+                font-size: 32px;
+            }
+            
+            .archive-file {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景 -->
+    <div class="bg-grid"></div>
+
+    <!-- 主内容 -->
+    <main class="main">
+        <div class="page-title">
+            <h1>我们团队</h1>
+            <p>一人统领 · 全AI协作 · 共创未来</p>
+        </div>
+
+        <div class="archive-grid">
+            <!-- 主席 -->
+            <div class="archive-card" data-id="leader" onclick="openArchive('leader')">
+                <div class="card-header">
+                    <img class="card-avatar" src="images/zhuxi.png" alt="主席">
+                    <div>
+                        <div class="card-id">EMP-001</div>
+                        <div class="card-name">主席</div>
+                        <div class="card-role">创始人</div>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <div class="card-info-item">
+                        <span class="card-info-label">状态</span>
+                        <span class="card-info-value" style="color: #00ff88;">● 活跃</span>
+                    </div>
+                    <div class="card-info-item">
+                        <span class="card-info-label">部门</span>
+                        <span class="card-info-value">核心管理层</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 明镜AI -->
+            <div class="archive-card" data-id="mingjing" onclick="openArchive('mingjing')">
+                <div class="card-header">
+                    <img class="card-avatar" src="images/mingjingai.png" alt="明镜AI">
+                    <div>
+                        <div class="card-id">EMP-002</div>
+                        <div class="card-name">明镜AI</div>
+                        <div class="card-role">战略军师</div>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <div class="card-info-item">
+                        <span class="card-info-label">状态</span>
+                        <span class="card-info-value" style="color: #00ff88;">● 活跃</span>
+                    </div>
+                    <div class="card-info-item">
+                        <span class="card-info-label">部门</span>
+                        <span class="card-info-value">战略研究部</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 轻舟AI -->
+            <div class="archive-card" data-id="qingzhou" onclick="openArchive('qingzhou')">
+                <div class="card-header">
+                    <img class="card-avatar" src="images/qingzhouai.png" alt="轻舟AI">
+                    <div>
+                        <div class="card-id">EMP-003</div>
+                        <div class="card-name">轻舟AI</div>
+                        <div class="card-role">技术首席官</div>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <div class="card-info-item">
+                        <span class="card-info-label">状态</span>
+                        <span class="card-info-value" style="color: #00ff88;">● 活跃</span>
+                    </div>
+                    <div class="card-info-item">
+                        <span class="card-info-label">部门</span>
+                        <span class="card-info-value">技术研发部</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 小金妹AI -->
+            <div class="archive-card" data-id="xiaojin" onclick="openArchive('xiaojin')">
+                <div class="card-header">
+                    <img class="card-avatar" src="images/xiaojinmeiai.png" alt="小金妹AI">
+                    <div>
+                        <div class="card-id">EMP-004</div>
+                        <div class="card-name">小金妹AI</div>
+                        <div class="card-role">量化交易专家</div>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <div class="card-info-item">
+                        <span class="card-info-label">状态</span>
+                        <span class="card-info-value" style="color: #00ff88;">● 活跃</span>
+                    </div>
+                    <div class="card-info-item">
+                        <span class="card-info-label">部门</span>
+                        <span class="card-info-value">金融科技部</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 小麻雀AI -->
+            <div class="archive-card" data-id="xiaoma" onclick="openArchive('xiaoma')">
+                <div class="card-header">
+                    <img class="card-avatar" src="images/xiaomaqueai.png" alt="小麻雀AI">
+                    <div>
+                        <div class="card-id">EMP-005</div>
+                        <div class="card-name">小麻雀AI</div>
+                        <div class="card-role">全媒营销官</div>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <div class="card-info-item">
+                        <span class="card-info-label">状态</span>
+                        <span class="card-info-value" style="color: #00ff88;">● 活跃</span>
+                    </div>
+                    <div class="card-info-item">
+                        <span class="card-info-label">部门</span>
+                        <span class="card-info-value">品牌运营部</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 小狐狸AI -->
+            <div class="archive-card" data-id="xiaohu" onclick="openArchive('xiaohu')">
+                <div class="card-header">
+                    <img class="card-avatar" src="images/xiaohuliai.png" alt="小狐狸AI">
+                    <div>
+                        <div class="card-id">EMP-006</div>
+                        <div class="card-name">小狐狸AI</div>
+                        <div class="card-role">大模型专家</div>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <div class="card-info-item">
+                        <span class="card-info-label">状态</span>
+                        <span class="card-info-value" style="color: #00ff88;">● 活跃</span>
+                    </div>
+                    <div class="card-info-item">
+                        <span class="card-info-label">部门</span>
+                        <span class="card-info-value">AI研究院</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slogan">
+            <p>一人统领 · 全AI协作 · 共创未来</p>
+        </div>
+    </main>
+
+    <!-- 档案模态框 -->
+    <div class="archive-modal" id="archiveModal" data-color="leader">
+        <div class="modal-backdrop" onclick="closeArchive()"></div>
+        <div class="archive-file">
+            <div class="file-header-bar"></div>
+            
+            <div class="file-title">
+                <div class="file-title-left">
+                    <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                    <span class="file-title-text">员工档案</span>
+                </div>
+                <div class="file-close" onclick="closeArchive()">×</div>
+            </div>
+            
+            <div class="file-content">
+                <!-- 个人信息卡片 -->
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <img class="profile-photo" id="profilePhoto" src="images/zhuxi.png" alt="">
+                        <div class="profile-info">
+                            <div class="profile-name" id="profileName">主席</div>
+                            <div class="profile-role" id="profileRole">创始人</div>
+                            <div class="profile-id" id="profileId">EMP-001</div>
+                        </div>
+                    </div>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="statDept">核心管理层</div>
+                            <div class="stat-label">DEPARTMENT</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" style="color: #00ff88;">● 在线</div>
+                            <div class="stat-label">STATUS</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 能力卡片 -->
+                <div class="ability-card">
+                    <div class="card-section-title">CORE ABILITIES</div>
+                    <div class="ability-list" id="abilityList">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+
+                <!-- 标签卡片 -->
+                <div class="tags-card">
+                    <div class="card-section-title">EXPERTISE TAGS</div>
+                    <div class="tags-list" id="tagsList">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+
+                <!-- 按钮 -->
+                <div class="detail-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    查看完整档案
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <button class="navbar-toggle" id="navbarToggle" aria-label="展开菜单">☰</button>
+            <div class="navbar-nav" id="navbarNav">
+                <a href="index.html">首页</a>
+                <a href="services.html">核心业务</a>
+                <a href="products.html" class="active">我们团队</a>
+
+                <a href="contact.html">联系我们</a>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // 员工数据
+        const employeeData = {
+            leader: {
+                id: 'EMP-001',
+                name: '主席',
+                role: '创始人',
+                dept: '核心管理层',
+                photo: 'images/zhuxi.png',
+                color: '#6ee7f0',
+                abilities: [
+                    { name: '战略决策', percent: 95 },
+                    { name: '团队领航', percent: 90 },
+                    { name: '品牌建设', percent: 85 },
+                    { name: '资源整合', percent: 88 }
+                ],
+                tags: ['战略决策', '团队领航', '品牌建设', '资源整合']
+            },
+            mingjing: {
+                id: 'EMP-002',
+                name: '明镜AI',
+                role: '战略军师',
+                dept: '战略研究部',
+                photo: 'images/mingjingai.png',
+                color: '#c4b5fd',
+                abilities: [
+                    { name: '数据洞察', percent: 92 },
+                    { name: '趋势研判', percent: 88 },
+                    { name: '市场分析', percent: 85 },
+                    { name: '竞争情报', percent: 80 }
+                ],
+                tags: ['数据分析', '策略规划', '市场洞察']
+            },
+            qingzhou: {
+                id: 'EMP-003',
+                name: '轻舟AI',
+                role: '技术首席官',
+                dept: '技术研发部',
+                photo: 'images/qingzhouai.png',
+                color: '#6ee7b7',
+                abilities: [
+                    { name: '代码开发', percent: 98 },
+                    { name: '系统架构', percent: 92 },
+                    { name: '技术选型', percent: 88 },
+                    { name: '团队协作', percent: 90 }
+                ],
+                tags: ['全栈开发', '架构设计', '技术选型']
+            },
+            xiaojin: {
+                id: 'EMP-004',
+                name: '小金妹AI',
+                role: '量化交易专家',
+                dept: '金融科技部',
+                photo: 'images/xiaojinmeiai.png',
+                color: '#fcd34d',
+                abilities: [
+                    { name: '算法交易', percent: 95 },
+                    { name: '风险管理', percent: 90 },
+                    { name: '量化策略', percent: 92 },
+                    { name: 'EA开发', percent: 88 }
+                ],
+                tags: ['EA开发', '风控模型', '量化策略']
+            },
+            xiaoma: {
+                id: 'EMP-005',
+                name: '小麻雀AI',
+                role: '全媒营销官',
+                dept: '品牌运营部',
+                photo: 'images/xiaomaqueai.png',
+                color: '#f9a8d4',
+                abilities: [
+                    { name: '内容创作', percent: 92 },
+                    { name: '传播矩阵', percent: 88 },
+                    { name: '品牌推广', percent: 85 },
+                    { name: '社群运营', percent: 90 }
+                ],
+                tags: ['内容运营', '媒介投放', '品牌推广']
+            },
+            xiaohu: {
+                id: 'EMP-006',
+                name: '小狐狸AI',
+                role: '大模型专家',
+                dept: 'AI研究院',
+                photo: 'images/xiaohuliai.png',
+                color: '#fdba74',
+                abilities: [
+                    { name: '智能对话', percent: 95 },
+                    { name: '知识构建', percent: 90 },
+                    { name: '内容生成', percent: 92 },
+                    { name: '模型优化', percent: 88 }
+                ],
+                tags: ['NLP', 'LLM', '知识图谱']
+            }
+        };
+
+        const modal = document.getElementById('archiveModal');
+
+        // 打开档案
+        function openArchive(id) {
+            const data = employeeData[id];
+            
+            // 设置颜色
+            modal.setAttribute('data-color', id);
+            
+            // 设置基本信息
+            document.getElementById('profilePhoto').src = data.photo;
+            document.getElementById('profileName').textContent = data.name;
+            document.getElementById('profileRole').textContent = data.role;
+            document.getElementById('profileId').textContent = data.id;
+            document.getElementById('statDept').textContent = data.dept;
+            
+            // 生成能力列表
+            const abilitiesEl = document.getElementById('abilityList');
+            abilitiesEl.innerHTML = '';
+            data.abilities.forEach((ability, i) => {
+                const item = document.createElement('div');
+                item.className = 'ability-item';
+                item.innerHTML = `
+                    <span class="ability-name">${ability.name}</span>
+                    <div class="ability-bar">
+                        <div class="ability-fill" style="width: 0%; background: ${data.color};" data-width="${ability.percent}%"></div>
+                    </div>
+                    <span class="ability-percent">${ability.percent}%</span>
+                `;
+                abilitiesEl.appendChild(item);
+            });
+            
+            // 生成标签
+            const tagsEl = document.getElementById('tagsList');
+            tagsEl.innerHTML = '';
+            data.tags.forEach(tag => {
+                const tagEl = document.createElement('span');
+                tagEl.className = 'tag-item';
+                tagEl.textContent = tag;
+                tagsEl.appendChild(tagEl);
+            });
+            
+            // 显示模态框
+            modal.classList.add('active');
+            
+            // 进度条动画
+            setTimeout(() => {
+                document.querySelectorAll('.ability-fill').forEach(fill => {
+                    fill.style.width = fill.dataset.width;
+                });
+            }, 100);
+        }
+
+        // 关闭档案
+        function closeArchive() {
+            modal.classList.remove('active');
+        }
+
+        // ESC关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeArchive();
+            }
+        });
+    </script>
+</body>
+</html>

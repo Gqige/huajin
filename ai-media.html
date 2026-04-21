@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全媒智控 · AI智造中心 - 华进科技</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style-vibe.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Space Grotesk', 'PingFang SC', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(5, 5, 8, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 107, 157, 0.2);
+        }
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 40px;
+            height: 70px;
+        }
+        .navbar-nav { display: flex; gap: 8px; }
+        .navbar-nav a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .navbar-nav a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+        .navbar-nav a.active { color: #ff6b9d; background: rgba(255, 107, 157, 0.1); }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 120px 80px 80px;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 107, 157, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(220, 80, 140, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 107, 157, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 107, 157, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            background: rgba(255, 107, 157, 0.1);
+            color: #ff6b9d;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .hero-title {
+            font-size: 64px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff 0%, #ff6b9d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: rgba(255,255,255,0.7);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 60px;
+        }
+
+        .stat-item { text-align: center; }
+        .stat-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #ff6b9d;
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.5);
+        }
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 8px;
+        }
+
+        .section { padding: 100px 80px; position: relative; }
+        .section-alt { background: rgba(255, 107, 157, 0.02); }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-title { font-size: 42px; font-weight: 700; margin-bottom: 16px; }
+        .section-desc { font-size: 16px; color: rgba(255,255,255,0.6); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: linear-gradient(145deg, rgba(255, 107, 157, 0.08) 0%, rgba(255, 107, 157, 0.02) 100%);
+            border: 1px solid rgba(255, 107, 157, 0.15);
+            border-radius: 20px;
+            padding: 36px;
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 107, 157, 0.4);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(255, 107, 157, 0.1);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: rgba(255, 107, 157, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 12px; color: #fff; }
+        .feature-card p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .process-item { text-align: center; padding: 30px; }
+        .process-num {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(255, 107, 157, 0.05));
+            border: 2px solid rgba(255, 107, 157, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff6b9d;
+            margin: 0 auto 20px;
+        }
+        .process-item h4 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+        .process-item p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+        .detail-list { max-width: 900px; margin: 0 auto; }
+        .list-item { display: flex; gap: 24px; padding: 24px 0; border-bottom: 1px solid rgba(255, 107, 157, 0.1); }
+        .list-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 107, 157, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .list-content h4 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .list-content p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+        .cta { text-align: center; padding: 100px 40px; background: linear-gradient(180deg, transparent, rgba(255, 107, 157, 0.05)); }
+        .cta-title { font-size: 36px; font-weight: 700; margin-bottom: 16px; }
+        .cta-text { font-size: 16px; color: rgba(255,255,255,0.6); margin-bottom: 30px; }
+        .cta-btn {
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #ff6b9d 0%, #e05588 100%);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 40px rgba(255, 107, 157, 0.4); }
+
+        .back-link { position: fixed; bottom: 30px; left: 30px; z-index: 100; }
+        .back-link a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(255, 107, 157, 0.1);
+            border: 1px solid rgba(255, 107, 157, 0.3);
+            border-radius: 10px;
+            color: #ff6b9d;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .back-link a:hover { background: rgba(255, 107, 157, 0.2); }
+
+        @media (max-width: 1024px) {
+            .hero-title { font-size: 48px; }
+            .hero-stats { flex-wrap: wrap; gap: 30px; }
+            .process-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .section, .hero { padding: 100px 20px 60px; }
+            .hero-title { font-size: 36px; }
+            .section-title { font-size: 30px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .process-grid { grid-template-columns: 1fr; }
+            .navbar-container { padding: 0 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-nav">
+                <a href="index.html">首页</a>
+                <a href="services.html" class="active">核心业务</a>
+                <a href="products.html">我们团队</a>
+
+                <a href="contact.html">联系我们</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="hero-badge">全媒智控 · AI智造中心</div>
+            <h1 class="hero-title">全媒智控 · AI智造中心</h1>
+            <p class="hero-subtitle">
+                依托AI大模型技术、全媒体智能算法、自动化运营工具打造的一站式全媒体内容智能生产、分发、管控与运营优化平台，聚焦为企业、品牌、个人IP、机构等客户提供全渠道、全流程、全自动的媒体内容智造解决方案
+            </p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-value">多平台</div>
+                    <div class="stat-label">全网媒体覆盖</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">AI驱动</div>
+                    <div class="stat-label">智能内容生产</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">全流程</div>
+                    <div class="stat-label">自动化运营</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="section-header">
+            <h2 class="section-title">核心服务板块</h2>
+            <p class="section-desc">四大核心服务模块，覆盖内容生产到运营管控的全流程</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">✍️</div>
+                <h3>AI智能内容生产</h3>
+                <p>覆盖文案、短视频脚本、海报文案、直播话术、推文、软文、宣传片脚本等全类型内容创作，支持多风格、多场景定制</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎬</div>
+                <h3>音视频智能智造</h3>
+                <p>AI语音合成（多音色、多方言、多情绪）、视频智能剪辑、字幕自动生成、配音配乐一体化，输入文案即可生成高清短视频</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>全媒体矩阵管控</h3>
+                <p>整合抖音、快手、视频号、小红书、微博、公众号等全网平台，一站式登录、权限管控、内容分发、定时发布</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>智能运营与舆情管控</h3>
+                <p>自动回复评论私信、智能筛选互动、舆情实时监测预警，模拟真人话术提升用户粘性，减轻人工运维压力</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>运营数据监控分析</h3>
+                <p>实时抓取各平台播放量、点赞、评论、涨粉等全维度数据，生成可视化报表，智能分析内容爆款逻辑</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>运营策略智能优化</h3>
+                <p>基于大数据与AI算法，分析行业爆款规律、竞争对手策略，自动优化内容方向、发布时间</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title">运营流程</h2>
+            <p class="section-desc">从内容生产到数据反馈，全程AI自动化完成</p>
+        </div>
+        <div class="process-grid">
+            <div class="process-item">
+                <div class="process-num">01</div>
+                <h4>内容创作</h4>
+                <p>AI智能生成各类内容</p>
+            </div>
+            <div class="process-item">
+                <div class="process-num">02</div>
+                <h4>视觉设计</h4>
+                <p>自动生成配套视觉素材</p>
+            </div>
+            <div class="process-item">
+                <div class="process-num">03</div>
+                <h4>智能分发</h4>
+                <p>一键分发至多平台</p>
+            </div>
+            <div class="process-item">
+                <div class="process-num">04</div>
+                <h4>数据优化</h4>
+                <p>分析反馈优化策略</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt">
+        <div class="section-header">
+            <h2 class="section-title">核心技术优势</h2>
+            <p class="section-desc">打破传统内容创作效率低、分发繁琐、运营难管控的痛点</p>
+        </div>
+        <div class="detail-list">
+            <div class="list-item">
+                <div class="list-icon">🧠</div>
+                <div class="list-content">
+                    <h4>大模型深度赋能</h4>
+                    <p>搭载主流大模型+行业垂直微调模型，精准匹配各行业内容创作与运营需求，内容专业性、贴合度远超通用工具</p>
+                </div>
+            </div>
+            <div class="list-item">
+                <div class="list-icon">⚡</div>
+                <div class="list-content">
+                    <h4>全流程自动化</h4>
+                    <p>从内容生产、设计、剪辑到分发、运维、数据分析，实现全链路AI自动化操作，大幅提升运营效率</p>
+                </div>
+            </div>
+            <div class="list-item">
+                <div class="list-icon">🔄</div>
+                <div class="list-content">
+                    <h4>全平台适配兼容</h4>
+                    <p>打通全网全媒体平台接口，适配各平台规则与流量逻辑，保障内容分发顺畅、运营合规</p>
+                </div>
+            </div>
+            <div class="list-item">
+                <div class="list-icon">📊</div>
+                <div class="list-content">
+                    <h4>数据化精准运营</h4>
+                    <p>以数据为核心驱动，实时追踪、智能分析，实现运营策略的动态优化，提升内容传播与商业转化效率</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title">适用客户群体</h2>
+            <p class="section-desc">为不同类型的客户提供全媒体运营解决方案</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🏢</div>
+                <h3>企业品牌方</h3>
+                <p>企业品牌方、电商直播商家</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏪</div>
+                <h3>本地商户</h3>
+                <p>本地实体商户、线下门店</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎬</div>
+                <h3>MCN机构</h3>
+                <p>MCN机构、个人自媒体/IP创作者</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏛️</div>
+                <h3>政务机构</h3>
+                <p>政务/公益机构、教育培训机构</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2 class="cta-title">开启您的全媒体智能化运营之旅</h2>
+        <p class="cta-text">降本增效、规模化产出、精细化运营，实现品牌曝光与商业价值的双重提升</p>
+        <a href="contact.html" class="cta-btn">立即咨询</a>
+    </section>
+
+    <div class="back-link">
+        <a href="services.html">← 返回核心业务</a>
+    </div>
+
+</body>
+</html>
